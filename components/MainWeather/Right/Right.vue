@@ -40,7 +40,7 @@
               'bg-[#272E37]',
               'border-transparent',
               'shadow-md',
-              'rounded-xl',
+              'rounded-lg',
               'w-[5.5vw]',
               'h-[16vh]',
               {
@@ -81,12 +81,15 @@ const props = defineProps({
   },
 });
 const forecastDays = ref(props.forecastWeatherData.forecast.forecastday);
+const searchResult = ref(null);
 const emits = defineEmits(['update-current-day', 'search']);
 const handleDataChange = (index) => {
   emits('update-current-day', index);
 };
 const handleSearchResult = (data) => {
   emits('search', data);
+  searchResult.value = data;
+  forecastDays.value = data.forecast.forecastday;
 };
 const formatDateToDayOfWeek = (dateString) => {
   const date = parseISO(dateString);

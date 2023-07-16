@@ -1,7 +1,10 @@
 <template>
   <div>
-    <div v-if="isLoading" class="flex items-center justify-center h-screen">
-      <span>Loading...</span>
+    <div
+      v-if="isLoading"
+      class="flex items-center justify-center h-screen text-white"
+    >
+      <div class="loading-spinner"></div>
     </div>
     <div
       v-else
@@ -22,7 +25,7 @@
             <div v-if="error">Failed to fetch forecast data.</div>
           </div>
         </div>
-        <div class="absolute w-1/2 right-8 h-4/5" >
+        <div class="absolute w-1/2 right-8 h-4/5">
           <Right
             v-if="!error"
             :forecastWeatherData="forecastWeatherData"
@@ -38,11 +41,31 @@
   </div>
 </template>
 
+<style>
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
+
 <script setup>
 import Left from '~/components/MainWeather/Left/Left.vue';
 import Right from '~/components/MainWeather/Right/Right.vue';
 import { getForecastWeatherData } from '@/services/weatherService';
-import { ref, onMounted, defineEmits } from 'vue';
+import { ref, onMounted, defineEmits, computed } from 'vue';
 
 const forecastWeatherData = ref({});
 const isLoading = ref(true);
@@ -60,7 +83,6 @@ async function fetchForecastWeatherData() {
   try {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     forecastWeatherData.value = await getForecastWeatherData('Hanoi');
-    console.log(forecastWeatherData.value);
     isLoading.value = false;
   } catch (error) {
     console.log(error);
@@ -70,7 +92,7 @@ async function fetchForecastWeatherData() {
 }
 const handleSearchResult = (data) => {
   forecastWeatherData.value = data;
-  currentDay.value = 0; // Reset the current day index
+  currentDay.value = 0;
 };
 onMounted(fetchForecastWeatherData);
 </script>
